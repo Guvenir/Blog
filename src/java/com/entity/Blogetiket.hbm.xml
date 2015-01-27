@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.Oca.2015 15:39:20 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.entity.Blogetiket" table="blogetiket" catalog="Blogger" optimistic-lock="version">
+        <id name="beid" type="java.lang.Integer">
+            <column name="beid" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="blog" class="com.entity.Blog" fetch="select">
+            <column name="bid" />
+        </many-to-one>
+        <many-to-one name="etiket" class="com.entity.Etiket" fetch="select">
+            <column name="eid" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

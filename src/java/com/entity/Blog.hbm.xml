@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.Oca.2015 15:39:20 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.entity.Blog" table="blog" catalog="Blogger" optimistic-lock="version">
+        <id name="bid" type="java.lang.Integer">
+            <column name="bid" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="user" class="com.entity.User" fetch="select">
+            <column name="uid" />
+        </many-to-one>
+        <property name="blogAd" type="string">
+            <column name="blog_ad" length="25" not-null="true" />
+        </property>
+        <property name="yaziAd" type="string">
+            <column name="yazi_ad" length="50" not-null="true" />
+        </property>
+        <property name="konu" type="string">
+            <column name="konu" length="25" not-null="true" />
+        </property>
+        <property name="shows" type="java.lang.Integer">
+            <column name="shows" />
+        </property>
+        <property name="tarih" type="date">
+            <column name="tarih" length="10" />
+        </property>
+        <property name="yorum" type="java.lang.Integer">
+            <column name="yorum" />
+        </property>
+        <set name="blogetikets" table="blogetiket" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="bid" />
+            </key>
+            <one-to-many class="com.entity.Blogetiket" />
+        </set>
+    </class>
+</hibernate-mapping>
