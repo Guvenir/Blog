@@ -175,7 +175,7 @@ public class loginBean {
 
     public void save() {
         boolean sonuc;
-        sonuc = lc.saveUser(this.yad, this.ysoyad, this.sifre);
+        sonuc = lc.saveUser(this.yad, this.ysoyad, this.ysifre);
     }
 
     public List<Blog> writes() {
