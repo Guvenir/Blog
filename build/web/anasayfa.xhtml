@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Blog</title>
+        <h:outputStylesheet library="css" name="style.css"/>
+        <h:outputStylesheet library="awesome" name="css/font-awesome.css"/>
+        <script type="text/javascript">
+            function handleLoginRequest(xhr, status, args) {
+                if (args.validationFailed || !args.loggedIn) {
+                    PF('yeni').jq.effect("bounce", {times: 5}, 100);
+                }
+            }
+        </script>
+    </h:head>
+    <h:body>
+        <div id="main">
+            <h:form>
+                <p:cache>
+                    <p:menubar style="font-size: 12px;" id="menu">
+                        <p:menuitem value="Anasayfa" icon="ui-icon-home"/>
+
+
+                        <f:facet name="options">
+                            <p:commandButton type="button" icon="fa fa-power-off"  >
+                                <p:confirm header="Güvenli Çıkış" message="Emin misiniz?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                                <p:commandButton value="Evet" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" action="#{loginBean.logout()}"/>
+                                <p:commandButton value="Hayır"  styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </f:facet>
+                    </p:menubar>
+                </p:cache>
+                <p:separator/>
+            </h:form>
+            <div id="content">
+                <div id="left">
+                    <h:form id="form">
+                        <p:growl id="grwl" showDetail="false" life="5000"/>
+                        <p:menu styleClass="menu">
+                            <p:menuitem value="Yeni Yazı" icon="ui-icon-disk" oncomplete="PF('kayit').show()"/>
+                           
+                            <p:menuitem value="Güncelle" icon="ui-icon-arrowrefresh-1-w"/>
+                        </p:menu>
+                        <p:dialog id="kayit" widgetVar="kayit" draggable="true"  modal="true" showEffect="fade" showHeader="true" hideEffect="fade" resizable="false">
+                            <h:panelGrid columns="2" id="grid">
+                                <f:facet name="header">Yeni Yazı Kaydet</f:facet>
+                                <p:watermark value="Blog Adı" for="bad"/>
+                                <p:inputText id="bad" value="#{loginBean.blogAd}" required="true"/>
+                                <p:watermark value="Yazı Adı" for="yad"/>
+                                <p:inputText value="#{loginBean.yaziAd}" id="yad" required="true"/>
+                                <p:watermark value="Konu" for="konu"/>
+                                <p:inputText id="konu" value="#{loginBean.konu}" required="true"/>
+                                <p:watermark value="Tarih" for="tarih"/>
+                                <p:inputMask id="tarih" value="#{loginBean.tarih}" required="true" mask="9999-99-99"/>
+                                <p:watermark value="Gösterim" for="show"/>
+                                <p:inputText id="show" value="#{loginBean.shows}" required="true"/>
+                                <p:watermark value="Yorum" for="yrm"/>
+                                <p:inputText id="yrm" value="#{loginBean.yorum}" required="true"/>
+
+                                <f:facet name="footer">
+                                    <p:commandButton value="Kaydet" action="#{loginBean.yaziKaydet()}" update=":form:grid,:dene:veri,:form:grwl" oncomplete="handleLoginRequest(xhr, status, args)"/>
+                                    <p:commandButton value="Çıkış" onclick="kayit.hide()"/>
+                                </f:facet>
+                            </h:panelGrid>
+                        </p:dialog>
+                    </h:form>
+                </div>
+                <div id="right">
+                    
+                    <div id="top">
+                    </div>
+                    <div id="center">
+                        <h:form>
+                        </h:form>
+                    </div>
+                    <div id="bottom">
+                        <h:form id="dene">
+                        <p:growl id="growl" showDetail="true" sticky="true" /> 
+                        <p:contextMenu for="veri">
+                            <p:menuitem value="Göster" icon="ui-icon-search"/>
+                            <p:menuitem value="Sil" icon="ui-icon-close" action="#{loginBean.yaziSil()}" update=":dene:veri"/>
+                        </p:contextMenu>
+                        <p:dataTable id="veri" value="#{loginBean.writes()}" var="yazi"  scrollable="true" scrollHeight="550"
+                                     selectionMode="single" rowKey="#{yazi.bid}" selection="#{loginBean.blogg}" editable="true">
+                            <p:ajax event="rowEdit" listener="#{loginBean.onRowEdit}" update=":dene:growl" />
+                            <p:ajax event="rowEditCancel" listener="#{loginBean.onRowCancel}" update=":dene:growl" />
+
+                            <p:column headerText="Blog Ad" filterBy="#{yazi.blogAd}" filterMatchMode="contains" sortBy="#{yazi.blogAd}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{yazi.blogAd}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{loginBean.blogAd}"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Yazı Ad" filterBy="#{yazi.yaziAd}" filterMatchMode="contains" sortBy="#{yazi.yaziAd}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{yazi.yaziAd}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{loginBean.yaziAd}"/>
+                                    </f:facet>
+                                </p:cellEditor>
+
+                            </p:column>
+                            <p:column headerText="Yazı Tarih" filterBy="#{yazi.tarih}" filterMatchMode="contains" sortBy="#{yazi.tarih}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{yazi.tarih}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputMask value="#{loginBean.tarih}" mask="9999-99-99"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Konu" filterBy="#{yazi.konu}" filterMatchMode="contains" sortBy="#{yazi.konu}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{yazi.konu}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{loginBean.konu}"/>
+                                    </f:facet>
+                                </p:cellEditor>
+
+                            </p:column>
+                            <p:column headerText="Görüntülenme" filterBy="#{yazi.shows}" filterMatchMode="contains" sortBy="#{yazi.shows}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{yazi.shows}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{loginBean.shows}"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Yorum" filterBy="#{yazi.yorum}" filterMatchMode="contains" sortBy="#{yazi.yorum}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{yazi.yorum}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{loginBean.yorum}"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Yazar" filterBy="#{yazi.user.ad}" filterMatchMode="contains" sortBy="#{yazi.user.ad}">
+                                <h:outputText value="#{yazi.user.ad}"/>
+                            </p:column>
+                            <p:column style="width:32px">
+                                <p:rowEditor/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:dialog widgetVar="gncl" draggable="true"   modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                            <p:outputPanel id="pnl">
+                                <p:panelGrid  columns="2" rendered="#{not empty loginBean.blogg}" columnClasses="label,value">
+                                    <h:outputLabel for="blgad" value="Blog Ad:" />
+                                    <p:inplace>
+                                        <p:inputText value="#{loginBean.blogg.blogAd}" required="true" label="text" />
+                                    </p:inplace>
+                                    <h:outputLabel for="yaziad" value="Yazı Ad:" />
+                                    <p:inplace>
+                                        <p:inputText value="#{loginBean.blogg.yaziAd}" required="true" label="text" />
+                                    </p:inplace>
+                                    <h:outputLabel for="ytrh" value="Tarih:" />
+                                    <p:inplace id="ytrh" editor="true">
+                                        <p:inputText value="#{loginBean.blogg.tarih}" required="true" label="text" />
+                                    </p:inplace>
+                                    <h:outputLabel for="ykonu" value="Konu:" />
+                                    <p:inplace id="ykonu" editor="true">
+                                        <p:inputText value="#{loginBean.blogg.konu}" required="true" label="text" />
+                                    </p:inplace>
+                                    <h:outputLabel for="yshw" value="Görüntülenme:" />
+                                    <p:inplace id="yshw" editor="true">
+                                        <p:inputText value="#{loginBean.blogg.shows}" required="true" label="text" />
+                                    </p:inplace>
+                                    <f:facet name="footer">
+                                        <p:commandButton  value="Güncelle"/>
+                                    </f:facet>
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:dialog>
+                    </h:form>
+                    </div>
+                    
+                </div>
+            </div>
+            <div id="footer">&copy;Ömer Güvenir</div>
+        </div>
+
+
+
+
+    </h:body>
+</html>
+

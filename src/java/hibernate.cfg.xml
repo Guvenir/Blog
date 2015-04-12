@@ -4,9 +4,9 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/Blogger?zeroDateTimeBehavior=convertToNull</property>
-    <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">12345</property>
+    <property name="hibernate.connection.url">jdbc:mysql://${OPENSHIFT_MYSQL_DB_HOST}:${OPENSHIFT_MYSQL_DB_PORT}/hbs</property>
+    <property name="hibernate.connection.username">admin5hTsKGF</property>
+    <property name="hibernate.connection.password">BjexANa18TY8</property>
     <mapping resource="com/entity/User.hbm.xml"/>
     <mapping resource="com/entity/Blogetiket.hbm.xml"/>
     <mapping resource="com/entity/Etiket.hbm.xml"/>

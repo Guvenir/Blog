@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.Oca.2015 15:39:20 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.entity.User" table="user" catalog="Blogger" optimistic-lock="version">
+        <id name="uid" type="java.lang.Integer">
+            <column name="uid" />
+            <generator class="identity" />
+        </id>
+        <property name="ad" type="string">
+            <column name="ad" length="25" not-null="true" />
+        </property>
+        <property name="soyad" type="string">
+            <column name="soyad" length="25" not-null="true" />
+        </property>
+        <property name="sifre" type="string">
+            <column name="sifre" length="25" not-null="true" />
+        </property>
+        <set name="blogs" table="blog" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="uid" />
+            </key>
+            <one-to-many class="com.entity.Blog" />
+        </set>
+    </class>
+</hibernate-mapping>
